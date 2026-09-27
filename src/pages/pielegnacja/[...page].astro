@@ -1,0 +1,46 @@
+---
+import { getCollection } from "astro:content";
+import Shell from "../../layouts/Shell.astro";
+
+export async function getStaticPaths({ paginate }) {
+  const posts = (await getCollection("pielegnacja")).sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+  return paginate(posts, { pageSize: 9 });
+}
+
+const { page } = Astro.props;
+---
+<Shell title="Pielęgnacja | Hola Care" description="Archiwum Hola Care: skóra, składniki, makijaż i rytuały łazienkowe.">
+  <section class="mx-auto max-w-5xl px-5 py-14">
+    <p class="text-xs uppercase tracking-[0.28em] text-leaf-700">Portal urody</p>
+    <h1 class="mt-2 font-display text-5xl">Pielęgnacja</h1>
+    <ol class="mt-10 divide-y divide-leaf-900/10">
+      {page.data.map((post, i) => (
+        <li>
+          <a class="grid gap-3 py-6 sm:grid-cols-[5rem_1fr_8rem] sm:items-baseline" href={`/pielegnacja/${post.slug}/`}>
+            <span class="font-display text-2xl text-leaf-700/40">{String((page.currentPage - 1) * page.size + i + 1).padStart(2, "0")}</span>
+            <span>
+              <span class="block text-xs uppercase tracking-widest text-leaf-700">{post.data.category}</span>
+              <span class="mt-1 block font-display text-3xl leading-tight">{post.data.title}</span>
+            </span>
+            <span class="text-sm opacity-60">{post.data.pubDate.toLocaleDateString("pl-PL")}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    {page.lastPage > 1 && (
+      <nav class="mt-12 flex flex-wrap items-center justify-center gap-3 text-sm" aria-label="Paginacja">
+        {page.url.prev ? (
+          <a href={page.url.prev} class="underline-offset-2 hover:underline">← Nowsze</a>
+        ) : (
+          <span class="opacity-40">← Nowsze</span>
+        )}
+        <span class="tabular-nums opacity-70">{page.currentPage} / {page.lastPage}</span>
+        {page.url.next ? (
+          <a href={page.url.next} class="underline-offset-2 hover:underline">Starsze →</a>
+        ) : (
+          <span class="opacity-40">Starsze →</span>
+        )}
+      </nav>
+    )}
+  </section>
+</Shell>

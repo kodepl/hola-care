@@ -1,0 +1,66 @@
+---
+import "../styles/global.css";
+const { title, description } = Astro.props;
+const path = Astro.url.pathname;
+---
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="canonical" href={`https://www.holacare.pl${path}`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script is:inline>if(location.hostname==="holacare.pl")location.replace(location.href.replace("://","://www."));</script>
+  </head>
+  <body class="bg-[#eef3ef] text-[#1c2a22] font-sans antialiased">
+    <header class="border-b border-leaf-900/10 bg-leaf-50/90 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4">
+        <a href="/" class="font-display text-3xl tracking-tight text-leaf-900 md:text-4xl">Hola <span class="text-leaf-700">Care</span></a>
+        <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-leaf-900/80">
+          <a href="/pielegnacja/">Pielęgnacja</a>
+          <a href="/tutoriale/">Tutoriale</a>
+          <a href="/o-nas/">Redakcja</a>
+          <a href="/kontakt/">Kontakt</a>
+        </nav>
+      </div>
+      <div class="border-t border-leaf-900/5 bg-leaf-100/60">
+        <div class="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-5 py-2 text-[11px] uppercase tracking-[0.18em] text-leaf-900/55">
+          <span>Skóra</span>
+          <span>Składniki</span>
+          <span>Makijaż</span>
+          <span>Zapach</span>
+          <span>Wideo</span>
+          <span>Gdynia</span>
+        </div>
+      </div>
+    </header>
+    <slot />
+    <footer class="mt-20 border-t border-[#1c2a22]/10 bg-[#dfe8e1]">
+      <div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
+          <p class="font-display text-3xl">Hola Care</p>
+          <p class="mt-3 max-w-sm text-sm leading-relaxed opacity-70">Naturalna uroda, składniki i makijaż bez teatralnego filtra.</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-medium">Czytaj</p>
+          <div class="mt-3 flex flex-col gap-2 opacity-80">
+            <a href="/pielegnacja/">Archiwum pielęgnacji</a>
+            <a href="/tutoriale/">Tutoriale makijażu</a>
+            <a href="/o-nas/">O redakcji</a>
+          </div>
+        </div>
+        <div class="text-sm">
+          <p class="font-medium">Prawa</p>
+          <div class="mt-3 flex flex-col gap-2 opacity-80">
+            <a href="/kontakt/">Kontakt</a>
+            <a href="/polityka-prywatnosci/">Polityka prywatności</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

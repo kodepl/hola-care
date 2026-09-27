@@ -1,0 +1,21 @@
+---
+import Shell from "../../layouts/Shell.astro";
+const items = [{"slug":"no-makeup-lisa-eldridge","title":"No makeup makeup z Lisą Eldridge","lead":"Klasyczny, prawie niewidoczny makijaż. Dobry punkt startu, gdy chcesz wyglądać jak siebie, tylko wypoczęta.","youtube":"oGpLLWnO3XY","category":"Naturalny"},{"slug":"naturalny-makijaz-codzienny","title":"Naturalny makijaż na co dzień","lead":"Baza, policzki i usta bez teatralnego konturu. Tutorial pod poranek, nie pod sesję.","youtube":"Nsg6ZDd4NfQ","category":"Dzień"},{"slug":"podklad-bez-maski","title":"Podkład, który wygląda jak skóra","lead":"Wayne Goss o minimalnej ilości produktu i buforowaniu zamiast warstwy farby.","youtube":"m1ltn8FUCfE","category":"Baza"},{"slug":"candlelight-skin","title":"Candlelight skin zamiast glass skin","lead":"Ciepłe, miękkie światło na twarzy. Kremy, prawie pusta pufa i odrobina rozświetlacza.","youtube":"BVtwjIhEeUQ","category":"Skóra"},{"slug":"trik-z-pudrem","title":"Puder przed podkładem","lead":"Stary trik Wayne’a Gossa: puder przed bazą, żeby makijaż trzymał się dłużej.","youtube":"EyQsVyGadbY","category":"Baza"},{"slug":"podstawy-makijazu","title":"Podstawy makijażu od zera","lead":"Kolejność i narzędzia, zanim przejdziesz do looków z rolki.","youtube":"GBPsy7rApe4","category":"Start"}];
+---
+<Shell title="Tutoriale makijażu | Hola Care" description="Tutoriale wideo z makijażu: naturalny look, brwi, usta i szybkie poranki. Hola Care.">
+  <section class="mx-auto max-w-6xl px-5 py-14">
+    <p class="text-xs uppercase tracking-[0.28em] text-leaf-700">Wideo</p>
+    <h1 class="mt-2 font-display text-5xl">Tutoriale makijażu</h1>
+    <p class="mt-4 max-w-2xl text-lg text-leaf-900/70">Wybrane materiały z YouTube. Oglądasz u źródła, my tylko układamy je tematycznie przy tekstach o pielęgnacji.</p>
+    <div class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((item) => (
+        <a href={`/tutoriale/${item.slug}/`} class="bg-white/70 p-3">
+          <img src={`https://i.ytimg.com/vi/${item.youtube}/hqdefault.jpg`} alt="" class="aspect-video w-full object-cover" />
+          <p class="mt-3 text-[11px] uppercase tracking-[0.18em] text-petal">{item.category}</p>
+          <h2 class="mt-1 font-display text-2xl leading-tight">{item.title}</h2>
+          <p class="mt-2 text-sm text-leaf-900/65">{item.lead}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Shell>

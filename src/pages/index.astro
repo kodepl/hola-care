@@ -1,0 +1,82 @@
+---
+import { getCollection } from "astro:content";
+import Shell from "../layouts/Shell.astro";
+const posts = (await getCollection("pielegnacja")).sort((a, b) => +b.data.pubDate - +a.data.pubDate);
+const lead = posts[0];
+const featured = posts.slice(1, 5);
+const more = posts.slice(5, 11);
+const tutorials = [{"slug":"no-makeup-lisa-eldridge","title":"No makeup makeup z Lisą Eldridge","lead":"Klasyczny, prawie niewidoczny makijaż. Dobry punkt startu, gdy chcesz wyglądać jak siebie, tylko wypoczęta.","youtube":"oGpLLWnO3XY","category":"Naturalny"},{"slug":"naturalny-makijaz-codzienny","title":"Naturalny makijaż na co dzień","lead":"Baza, policzki i usta bez teatralnego konturu. Tutorial pod poranek, nie pod sesję.","youtube":"Nsg6ZDd4NfQ","category":"Dzień"},{"slug":"podklad-bez-maski","title":"Podkład, który wygląda jak skóra","lead":"Wayne Goss o minimalnej ilości produktu i buforowaniu zamiast warstwy farby.","youtube":"m1ltn8FUCfE","category":"Baza"}];
+---
+<Shell title="Hola Care | naturalna uroda i pielęgnacja" description="Portal o skórze, składnikach i makijażu. Artykuły i tutoriale wideo. Redakcja Hola Care, Gdynia.">
+  <section class="relative overflow-hidden border-b border-leaf-900/10">
+    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1800&h=1000&q=80" alt="" class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-r from-leaf-900/85 via-leaf-900/55 to-transparent"></div>
+    <div class="relative mx-auto max-w-6xl px-5 py-24 md:py-32">
+      <p class="text-xs uppercase tracking-[0.35em] text-white/70">Portal urody · Gdynia</p>
+      <h1 class="mt-4 max-w-2xl font-display text-5xl leading-[1.05] text-white md:text-7xl">Hola Care</h1>
+      <p class="mt-5 max-w-xl text-lg text-white/85">Naturalna uroda, składniki i makijaż bez teatralnego filtra.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/pielegnacja/" class="bg-white px-5 py-3 text-sm font-medium text-leaf-900">Czytaj pielęgnację</a>
+        <a href="/tutoriale/" class="border border-white/50 px-5 py-3 text-sm text-white">Tutoriale wideo</a>
+      </div>
+    </div>
+  </section>
+
+  {lead && (
+    <section class="mx-auto grid max-w-6xl gap-8 px-5 py-14 md:grid-cols-[1.35fr_1fr]">
+      <a href={`/pielegnacja/${lead.slug}/`} class="group block">
+        <img src={lead.data.image} alt="" class="aspect-[16/10] w-full object-cover" />
+        <p class="mt-4 text-xs uppercase tracking-[0.22em] text-leaf-700">{lead.data.category}</p>
+        <h2 class="mt-2 font-display text-4xl leading-tight group-hover:underline md:text-5xl">{lead.data.title}</h2>
+        <p class="mt-3 max-w-2xl text-leaf-900/70">{lead.data.description}</p>
+      </a>
+      <div class="flex flex-col divide-y divide-leaf-900/10 border-t border-leaf-900/10 md:border-t-0 md:border-l md:pl-8">
+        {featured.map((post) => (
+          <a href={`/pielegnacja/${post.slug}/`} class="py-5">
+            <p class="text-[11px] uppercase tracking-[0.18em] text-leaf-700">{post.data.category}</p>
+            <h3 class="mt-1 font-display text-2xl leading-tight">{post.data.title}</h3>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="bg-leaf-100/70 py-14">
+    <div class="mx-auto max-w-6xl px-5">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="text-xs uppercase tracking-[0.28em] text-leaf-700">Wideo</p>
+          <h2 class="mt-2 font-display text-4xl">Tutoriale makijażu</h2>
+        </div>
+        <a href="/tutoriale/" class="text-sm font-medium text-leaf-700 underline-offset-2 hover:underline">Wszystkie tutoriale</a>
+      </div>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {tutorials.map((item) => (
+          <a href={`/tutoriale/${item.slug}/`} class="bg-leaf-50 p-3 shadow-sm">
+            <div class="aspect-video overflow-hidden bg-leaf-900/10">
+              <img src={`https://i.ytimg.com/vi/${item.youtube}/hqdefault.jpg`} alt="" class="h-full w-full object-cover" />
+            </div>
+            <p class="mt-3 text-[11px] uppercase tracking-[0.18em] text-petal">{item.category}</p>
+            <h3 class="mt-1 font-display text-2xl leading-tight">{item.title}</h3>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-14">
+    <div class="flex items-end justify-between gap-4">
+      <h2 class="font-display text-4xl">Z archiwum</h2>
+      <a href="/pielegnacja/" class="text-sm font-medium text-leaf-700 underline-offset-2 hover:underline">Pełna lista</a>
+    </div>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {more.map((post) => (
+        <a href={`/pielegnacja/${post.slug}/`} class="group">
+          <img src={post.data.image} alt="" class="aspect-[4/3] w-full object-cover" />
+          <p class="mt-3 text-[11px] uppercase tracking-[0.18em] text-leaf-700">{post.data.category}</p>
+          <h3 class="mt-1 font-display text-2xl leading-tight group-hover:underline">{post.data.title}</h3>
+        </a>
+      ))}
+    </div>
+  </section>
+</Shell>
