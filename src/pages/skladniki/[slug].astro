@@ -2,10 +2,10 @@
 import Layout from "../../layouts/Shell.astro";
 import { getCollection } from "astro:content";
 
-function slugify(value) {
-  return String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
 export async function getStaticPaths() {
+  function slugify(value) {
+    return String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
   const posts = await getCollection("pielegnacja");
   const names = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
   return names.map((name) => ({
