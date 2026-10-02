@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import GithubSlugger from "github-slugger";
 import Shell from "../../layouts/Shell.astro";
 export async function getStaticPaths() {
   const posts = (await getCollection("pielegnacja")).sort((a, b) => +b.data.pubDate - +a.data.pubDate);
@@ -9,17 +10,49 @@ export async function getStaticPaths() {
   }));
 }
 const { post, newer, older } = Astro.props;
+function slugify(value) {
+  return String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+const slugger = new GithubSlugger();
+const headings = (post.body || "").split("\n").filter((line) => line.startsWith("## ")).map((line) => {
+  const text = line.replace(/^##\s+/, "").trim();
+  return { text, id: slugger.slug(text) };
+});
+const related = (await getCollection("pielegnacja")).filter((item) => item.slug !== post.slug && item.data.category && item.data.category === post.data.category).slice(0, 3);
 const { Content } = await post.render();
 ---
 <Shell title={post.data.title} description={post.data.description}>
   <article class="mx-auto max-w-3xl px-5 py-12">
-    <p class="text-xs uppercase tracking-[0.28em] text-leaf-700">{post.data.category}</p>
+    <p class="text-xs uppercase tracking-[0.28em] text-leaf-700"><a href={`/skladniki/${slugify(post.data.category)}/`}>{post.data.category}</a></p>
     <h1 class="mt-3 font-display text-5xl leading-[1.05]">{post.data.title}</h1>
     <p class="mt-4 text-sm opacity-70">{post.data.author} · {post.data.pubDate.toLocaleDateString("pl-PL")} · {post.data.readingTime}</p>
     {post.data.image && <img src={post.data.image} alt="" class="mt-8 aspect-[16/10] w-full object-cover" />}
+    {headings.length > 1 && (
+      <nav class="mt-8 border border-black/10 p-4 text-sm" aria-label="O czym jest tekst">
+        <p class="text-xs uppercase tracking-[0.18em] opacity-60">O czym jest tekst</p>
+        <ol class="mt-3 space-y-1">
+          {headings.map((item) => <li><a class="underline-offset-2 hover:underline" href={"#" + item.id}>{item.text}</a></li>)}
+        </ol>
+      </nav>
+    )}
     <div class="prose prose-lg mt-10 max-w-none prose-headings:font-display prose-a:text-[#2f6b52]">
       <Content />
     </div>
+    {post.data.authorBio && (
+      <aside class="mt-12 border border-black/10 p-5">
+        <p class="text-xs uppercase tracking-[0.18em] opacity-60">Kto pisze</p>
+        <p class="mt-2 font-display text-2xl">{post.data.author}</p>
+        <p class="mt-2 text-sm leading-relaxed opacity-75">{post.data.authorBio}</p>
+      </aside>
+    )}
+    {related.length > 0 && (
+      <section class="mt-10">
+        <p class="text-xs uppercase tracking-[0.18em] opacity-60">Z tej samej półki</p>
+        <ul class="mt-3 space-y-2">
+          {related.map((item) => <li><a class="font-display text-2xl underline-offset-2 hover:underline" href={`/pielegnacja/${item.slug}/`}>{item.data.title}</a></li>)}
+        </ul>
+      </section>
+    )}
     <nav class="mt-14 grid gap-4 border-t border-leaf-900/10 pt-6 sm:grid-cols-2">
       {newer && <a href={`/pielegnacja/${newer.slug}/`}>Nowszy<br/><span class="font-display text-xl">{newer.data.title}</span></a>}
       {older && <a class="sm:text-right" href={`/pielegnacja/${older.slug}/`}>Starszy<br/><span class="font-display text-xl">{older.data.title}</span></a>}

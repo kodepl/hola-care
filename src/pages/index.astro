@@ -6,6 +6,12 @@ const lead = posts[0];
 const featured = posts.slice(1, 5);
 const more = posts.slice(5, 11);
 const tutorials = [{"slug":"no-makeup-lisa-eldridge","title":"No makeup makeup z Lisą Eldridge","lead":"Klasyczny, prawie niewidoczny makijaż. Dobry punkt startu, gdy chcesz wyglądać jak siebie, tylko wypoczęta.","youtube":"oGpLLWnO3XY","category":"Naturalny"},{"slug":"naturalny-makijaz-codzienny","title":"Naturalny makijaż na co dzień","lead":"Baza, policzki i usta bez teatralnego konturu. Tutorial pod poranek, nie pod sesję.","youtube":"Nsg6ZDd4NfQ","category":"Dzień"},{"slug":"podklad-bez-maski","title":"Podkład, który wygląda jak skóra","lead":"Wayne Goss o minimalnej ilości produktu i buforowaniu zamiast warstwy farby.","youtube":"m1ltn8FUCfE","category":"Baza"}];
+
+const dzialy = [...new Set(posts.map((post) => post.data.category).filter(Boolean))].map((name) => ({
+  name,
+  slug: String(name).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+}));
+
 ---
 <Shell title="Hola Care | naturalna uroda i pielęgnacja" description="Portal o skórze, składnikach i makijażu. Artykuły i tutoriale wideo. Redakcja Hola Care, Gdynia.">
   <section class="relative overflow-hidden border-b border-leaf-900/10">
@@ -79,4 +85,20 @@ const tutorials = [{"slug":"no-makeup-lisa-eldridge","title":"No makeup makeup z
       ))}
     </div>
   </section>
+
+  <section class="mx-auto max-w-6xl px-5 py-12">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[0.22em] opacity-60">Działy</p>
+        <h2 class="mt-1 font-display text-4xl">Składniki</h2>
+      </div>
+      <a class="text-sm underline-offset-2 hover:underline" href="/skladniki/">Wszystkie działy</a>
+    </div>
+    <div class="mt-6 flex flex-wrap gap-2">
+      {dzialy.map((item) => (
+        <a class="border border-black/10 px-3 py-2 text-sm hover:opacity-80" href={`/skladniki/${item.slug}/`}>{item.name}</a>
+      ))}
+    </div>
+  </section>
+
 </Shell>

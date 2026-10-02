@@ -1,0 +1,36 @@
+---
+import Layout from "../../layouts/Shell.astro";
+import { getCollection } from "astro:content";
+
+function slugify(value) {
+  return String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+export async function getStaticPaths() {
+  const posts = await getCollection("pielegnacja");
+  const names = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
+  return names.map((name) => ({
+    params: { slug: slugify(name) },
+    props: {
+      name,
+      posts: posts.filter((post) => post.data.category === name).sort((a, b) => +new Date(b.data.pubDate) - +new Date(a.data.pubDate)),
+    },
+  }));
+}
+const { name, posts } = Astro.props;
+---
+<Layout title={name + " | Składniki"} description={name + ". Działy Hola Care. Skóra, skład i makijaż osobno, żeby dało się wrócić do tematu."}>
+  <section class="mx-auto max-w-3xl px-5 py-14">
+    <p class="text-xs uppercase tracking-[0.22em] opacity-60"><a href="/skladniki/">Składniki</a></p>
+    <h1 class="mt-2 font-display text-5xl">{name}</h1>
+    <ol class="mt-8 divide-y divide-black/10">
+      {posts.map((post, i) => (
+        <li>
+          <a class="block py-5" href={`/pielegnacja/${post.slug}/`}>
+            <span class="text-xs opacity-50">{String(i + 1).padStart(2, "0")}</span>
+            <span class="mt-1 block font-display text-3xl leading-tight">{post.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+</Layout>

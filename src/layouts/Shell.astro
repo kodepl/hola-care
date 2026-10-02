@@ -25,6 +25,8 @@ const path = Astro.url.pathname;
           <a href="/tutoriale/">Tutoriale</a>
           <a href="/o-nas/">Redakcja</a>
           <a href="/kontakt/">Kontakt</a>
+        <a href="/skladniki/">Składniki</a>
+          <a href="/w-skladzie/">Szukaj</a>
         </nav>
       </div>
       <div class="border-t border-leaf-900/5 bg-leaf-100/60">
@@ -62,5 +64,14 @@ const path = Astro.url.pathname;
         </div>
       </div>
     </footer>
+  <div id="pasek-hola-care" style="position:fixed;top:0;left:0;height:3px;width:0;background:#2f6b52;z-index:40;pointer-events:none"></div>
+    <script>
+      const pasek = document.getElementById("pasek-hola-care");
+      addEventListener("scroll", () => {
+        const node = document.documentElement;
+        const max = node.scrollHeight - node.clientHeight;
+        pasek.style.width = (max > 0 ? (node.scrollTop / max) * 100 : 0) + "%";
+      }, { passive: true });
+    </script>
   </body>
 </html>

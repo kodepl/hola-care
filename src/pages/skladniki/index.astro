@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Shell.astro";
+import { getCollection } from "astro:content";
+
+function slugify(value) {
+  return String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+const posts = await getCollection("pielegnacja");
+const names = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
+---
+<Layout title="Składniki" description="Działy Hola Care. Skóra, skład i makijaż osobno, żeby dało się wrócić do tematu.">
+  <section class="mx-auto max-w-4xl px-5 py-14">
+    <p class="text-xs uppercase tracking-[0.22em] opacity-60">Redakcja</p>
+    <h1 class="mt-2 font-display text-5xl">Składniki</h1>
+    <p class="mt-4 max-w-xl text-lg opacity-75">Działy Hola Care. Skóra, skład i makijaż osobno, żeby dało się wrócić do tematu.</p>
+    <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+      {names.map((name) => (
+        <li>
+          <a class="block border border-black/10 p-5 hover:opacity-80" href={`/skladniki/${slugify(name)}/`}>
+            <span class="font-display text-3xl">{name}</span>
+            <span class="mt-2 block text-sm opacity-60">{posts.filter((post) => post.data.category === name).length} tekstów</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
