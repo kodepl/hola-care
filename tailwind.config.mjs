@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ["Literata", "Georgia", "serif"],
+        display: ["Fraunces", "Georgia", "serif"],
         sans: ["Sora", "system-ui", "sans-serif"],
       },
       colors: {
-        leaf: { 50: "#eef3ef", 100: "#dfe8e1", 700: "#2f6b52", 900: "#1c2a22" },
-        petal: "#8a4d62",
+        leaf: { 50: "#eef2ef", 100: "#dce5df", 700: "#245c44", 900: "#15241c" },
+        petal: "#7a4458",
+        sand: "#c9b8a0",
       },
     },
   },

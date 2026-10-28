@@ -1,7 +1,26 @@
 ---
 import "../styles/global.css";
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  image = "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1200&h=630&q=80",
+  type = "website",
+} = Astro.props;
 const path = Astro.url.pathname;
+const canonical = `https://www.holacare.pl${path}`;
+const nav = [
+  { href: "/pielegnacja/", label: "Pielęgnacja" },
+  { href: "/tutoriale/", label: "Tutoriale" },
+  { href: "/skladniki/", label: "Składniki" },
+  { href: "/kolejnosc/", label: "Kolejność" },
+  { href: "/w-skladzie/", label: "Szukaj" },
+  { href: "/o-nas/", label: "Redakcja" },
+  { href: "/kontakt/", label: "Kontakt" },
+];
+function isCurrent(href) {
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(href);
+}
 ---
 <html lang="pl">
   <head>
@@ -9,62 +28,92 @@ const path = Astro.url.pathname;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" href="/favicon.svg" />
-    <link rel="canonical" href={`https://www.holacare.pl${path}`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={type} />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Hola Care" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
     <script is:inline>if(location.hostname==="holacare.pl")location.replace(location.href.replace("://","://www."));</script>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Hola Care",
+      url: "https://www.holacare.pl/",
+      description: "Naturalna uroda, składniki i makijaż bez teatralnego filtra. Portal z Gdyni.",
+      inLanguage: "pl-PL",
+      publisher: {
+        "@type": "Organization",
+        name: "Hola Care",
+        url: "https://www.holacare.pl/",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "ul. Świętojańska 16/4",
+          addressLocality: "Gdynia",
+          postalCode: "81-368",
+          addressCountry: "PL",
+        },
+      },
+    })} />
   </head>
-  <body class="bg-[#eef3ef] text-[#1c2a22] font-sans antialiased">
-    <header class="border-b border-leaf-900/10 bg-leaf-50/90 backdrop-blur">
+  <body class="font-sans antialiased text-leaf-900">
+    <a href="#tresc" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-leaf-50 focus:px-3 focus:py-2">Przejdź do treści</a>
+    <header class="border-b border-[var(--line)] bg-[rgba(238,242,239,0.92)] backdrop-blur">
       <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4">
-        <a href="/" class="font-display text-3xl tracking-tight text-leaf-900 md:text-4xl">Hola <span class="text-leaf-700">Care</span></a>
-        <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-leaf-900/80">
-          <a href="/pielegnacja/">Pielęgnacja</a>
-          <a href="/tutoriale/">Tutoriale</a>
-          <a href="/o-nas/">Redakcja</a>
-          <a href="/kontakt/">Kontakt</a>
-        <a href="/skladniki/">Składniki</a>
-          <a href="/w-skladzie/">Szukaj</a>
+        <a href="/" class="leading-none">
+          <span class="font-display text-3xl tracking-tight md:text-4xl">Hola <span class="text-leaf-700">Care</span></span>
+          <span class="mt-1 block text-[10px] uppercase tracking-[0.24em] text-[var(--mute)]">Skóra · skład · Gdynia</span>
+        </a>
+        <nav class="site-nav flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-[var(--mute)]" aria-label="Główne">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined} class="hover:text-leaf-700">{item.label}</a>
+          ))}
         </nav>
       </div>
-      <div class="border-t border-leaf-900/5 bg-leaf-100/60">
-        <div class="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-5 py-2 text-[11px] uppercase tracking-[0.18em] text-leaf-900/55">
-          <span>Skóra</span>
-          <span>Składniki</span>
-          <span>Makijaż</span>
-          <span>Zapach</span>
-          <span>Wideo</span>
-          <span>Gdynia</span>
-        </div>
-      </div>
     </header>
-    <slot />
-    <footer class="mt-20 border-t border-[#1c2a22]/10 bg-[#dfe8e1]">
+    <main id="tresc">
+      <slot />
+    </main>
+    <footer class="mt-20 border-t border-[var(--line)] bg-leaf-100/80">
       <div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <p class="font-display text-3xl">Hola Care</p>
-          <p class="mt-3 max-w-sm text-sm leading-relaxed opacity-70">Naturalna uroda, składniki i makijaż bez teatralnego filtra.</p>
+          <p class="mt-3 max-w-sm text-sm leading-relaxed text-[var(--mute)]">Naturalna uroda, składniki i makijaż bez teatralnego filtra. Piszemy z Gdyni, testujemy w łazience.</p>
         </div>
         <div class="text-sm">
           <p class="font-medium">Czytaj</p>
-          <div class="mt-3 flex flex-col gap-2 opacity-80">
+          <div class="mt-3 flex flex-col gap-2 text-[var(--mute)]">
             <a href="/pielegnacja/">Archiwum pielęgnacji</a>
             <a href="/tutoriale/">Tutoriale makijażu</a>
-            <a href="/o-nas/">O redakcji</a>
+            <a href="/skladniki/">Działy składników</a>
+            <a href="/kolejnosc/">Kolejność produktów</a>
           </div>
         </div>
         <div class="text-sm">
-          <p class="font-medium">Prawa</p>
-          <div class="mt-3 flex flex-col gap-2 opacity-80">
+          <p class="font-medium">Redakcja</p>
+          <div class="mt-3 flex flex-col gap-2 text-[var(--mute)]">
+            <a href="/o-nas/">O nas</a>
             <a href="/kontakt/">Kontakt</a>
+            <a href="/w-skladzie/">Szukaj</a>
             <a href="/polityka-prywatnosci/">Polityka prywatności</a>
           </div>
         </div>
       </div>
+      <div class="border-t border-[var(--line)]">
+        <p class="mx-auto max-w-6xl px-5 py-4 text-xs text-[var(--mute)]">© {new Date().getFullYear()} Hola Care · ul. Świętojańska 16/4, 81-368 Gdynia</p>
+      </div>
     </footer>
-  <div id="pasek-hola-care" style="position:fixed;top:0;left:0;height:3px;width:0;background:#2f6b52;z-index:40;pointer-events:none"></div>
+    <div id="pasek-hola-care" style="position:fixed;top:0;left:0;height:3px;width:0;background:#245c44;z-index:40;pointer-events:none" aria-hidden="true"></div>
     <script>
       const pasek = document.getElementById("pasek-hola-care");
       addEventListener("scroll", () => {
@@ -73,7 +122,7 @@ const path = Astro.url.pathname;
         pasek.style.width = (max > 0 ? (node.scrollTop / max) * 100 : 0) + "%";
       }, { passive: true });
     </script>
-      <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"6153445cb680443ea5f295d04d0d8968"}'></script>
-      <script defer src="https://umami-pink-phi.vercel.app/script.js" data-website-id="561f0aca-fc36-4117-88c6-19bd7604b4fb" data-domains="holacare.pl,www.holacare.pl"></script>
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"6153445cb680443ea5f295d04d0d8968"}'></script>
+    <script defer src="https://umami-pink-phi.vercel.app/script.js" data-website-id="561f0aca-fc36-4117-88c6-19bd7604b4fb" data-domains="holacare.pl,www.holacare.pl"></script>
   </body>
 </html>

@@ -1,5 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-html { scroll-behavior: smooth; }
-body { font-feature-settings: "ss01" on; }
+
+:root {
+  --ink: #15241c;
+  --paper: #eef2ef;
+  --paper-deep: #dce5df;
+  --leaf: #245c44;
+  --leaf-bright: #2f6b52;
+  --sand: #c9b8a0;
+  --mute: rgba(21, 36, 28, 0.62);
+  --line: rgba(21, 36, 28, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-feature-settings: "ss01" on;
+  background-image:
+    radial-gradient(ellipse 70% 45% at 90% 0%, rgba(36, 92, 68, 0.09), transparent 50%),
+    linear-gradient(165deg, #f3f6f3 0%, var(--paper) 40%, #e7eee9 100%);
+  min-height: 100%;
+}
+
+::selection {
+  background: rgba(36, 92, 68, 0.18);
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.18em;
+}
+
+.prose a {
+  color: var(--leaf);
+}
+
+.prose h2,
+.prose h3 {
+  scroll-margin-top: 5rem;
+}
+
+.site-nav a[aria-current="page"] {
+  color: var(--leaf);
+}
+
+@keyframes hola-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: hola-fade 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fade-up-2 {
+  animation-delay: 0.14s;
+}
+
+.fade-up-3 {
+  animation-delay: 0.26s;
+}

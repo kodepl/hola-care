@@ -20,40 +20,54 @@ const headings = (post.body || "").split("\n").filter((line) => line.startsWith(
 });
 const related = (await getCollection("pielegnacja")).filter((item) => item.slug !== post.slug && item.data.category && item.data.category === post.data.category).slice(0, 3);
 const { Content } = await post.render();
+const pageUrl = `https://www.holacare.pl/pielegnacja/${post.slug}/`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  image: post.data.image ? [post.data.image] : undefined,
+  author: { "@type": "Person", name: post.data.author || "Natalia Hola" },
+  publisher: { "@type": "Organization", name: "Hola Care", url: "https://www.holacare.pl/" },
+  mainEntityOfPage: pageUrl,
+  inLanguage: "pl-PL",
+};
 ---
-<Shell title={post.data.title} description={post.data.description}>
+<Shell title={`${post.data.title} | Hola Care`} description={post.data.description} image={post.data.image} type="article">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="mx-auto max-w-3xl px-5 py-12">
-    <p class="text-xs uppercase tracking-[0.28em] text-leaf-700"><a href={`/skladniki/${slugify(post.data.category)}/`}>{post.data.category}</a></p>
+    <p class="text-[11px] uppercase tracking-[0.28em] text-leaf-700"><a href={`/skladniki/${slugify(post.data.category)}/`}>{post.data.category}</a></p>
     <h1 class="mt-3 font-display text-5xl leading-[1.05]">{post.data.title}</h1>
-    <p class="mt-4 text-sm opacity-70">{post.data.author} · {post.data.pubDate.toLocaleDateString("pl-PL")} · {post.data.readingTime}</p>
-    {post.data.image && <img src={post.data.image} alt="" class="mt-8 aspect-[16/10] w-full object-cover" />}
+    <p class="mt-4 text-sm text-[var(--mute)]">{post.data.author} · <time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString("pl-PL")}</time> · {post.data.readingTime}</p>
+    {post.data.image && <img src={post.data.image} alt="" class="mt-8 aspect-[16/10] w-full object-cover" width="1400" height="875" />}
     {headings.length > 1 && (
-      <nav class="mt-8 border border-black/10 p-4 text-sm" aria-label="O czym jest tekst">
-        <p class="text-xs uppercase tracking-[0.18em] opacity-60">O czym jest tekst</p>
+      <nav class="mt-8 border border-[var(--line)] p-4 text-sm" aria-label="O czym jest tekst">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-[var(--mute)]">O czym jest tekst</p>
         <ol class="mt-3 space-y-1">
           {headings.map((item) => <li><a class="underline-offset-2 hover:underline" href={"#" + item.id}>{item.text}</a></li>)}
         </ol>
       </nav>
     )}
-    <div class="prose prose-lg mt-10 max-w-none prose-headings:font-display prose-a:text-[#2f6b52]">
+    <div class="prose prose-lg mt-10 max-w-none prose-headings:font-display prose-a:text-leaf-700">
       <Content />
     </div>
     {post.data.authorBio && (
-      <aside class="mt-12 border border-black/10 p-5">
-        <p class="text-xs uppercase tracking-[0.18em] opacity-60">Kto pisze</p>
+      <aside class="mt-12 border border-[var(--line)] p-5">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-[var(--mute)]">Kto pisze</p>
         <p class="mt-2 font-display text-2xl">{post.data.author}</p>
-        <p class="mt-2 text-sm leading-relaxed opacity-75">{post.data.authorBio}</p>
+        <p class="mt-2 text-sm leading-relaxed text-[var(--mute)]">{post.data.authorBio}</p>
       </aside>
     )}
     {related.length > 0 && (
       <section class="mt-10">
-        <p class="text-xs uppercase tracking-[0.18em] opacity-60">Z tej samej półki</p>
+        <p class="text-[11px] uppercase tracking-[0.18em] text-[var(--mute)]">Z tej samej półki</p>
         <ul class="mt-3 space-y-2">
           {related.map((item) => <li><a class="font-display text-2xl underline-offset-2 hover:underline" href={`/pielegnacja/${item.slug}/`}>{item.data.title}</a></li>)}
         </ul>
       </section>
     )}
-    <nav class="mt-14 grid gap-4 border-t border-leaf-900/10 pt-6 sm:grid-cols-2">
+    <nav class="mt-14 grid gap-4 border-t border-[var(--line)] pt-6 sm:grid-cols-2">
       {newer && <a href={`/pielegnacja/${newer.slug}/`}>Nowszy<br/><span class="font-display text-xl">{newer.data.title}</span></a>}
       {older && <a class="sm:text-right" href={`/pielegnacja/${older.slug}/`}>Starszy<br/><span class="font-display text-xl">{older.data.title}</span></a>}
     </nav>

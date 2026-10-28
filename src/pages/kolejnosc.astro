@@ -1,0 +1,129 @@
+---
+import Shell from "../layouts/Shell.astro";
+
+const steps = [
+  {
+    id: "cleanse",
+    title: "Mycie",
+    tip: "Letnia woda, łagodny żel albo olejek. Bez drapania ręcznikiem.",
+  },
+  {
+    id: "tone",
+    title: "Tonik / mgiełka",
+    tip: "Opcjonalnie. Ma domknąć mycie, nie szczypać.",
+  },
+  {
+    id: "treat",
+    title: "Serum / aktywny",
+    tip: "Jeden główny składnik na wieczór. Retinol i mocny kwas nie w tej samej warstwie.",
+  },
+  {
+    id: "moist",
+    title: "Krem / olejek",
+    tip: "Warstwa, która zostaje. Olejek na końcówki kremu, nie zamiast mycia.",
+  },
+  {
+    id: "spf",
+    title: "SPF (rano)",
+    tip: "Na koniec poranka. Podkład dopiero po filtrze, gdy skóra nie jest lepka.",
+  },
+];
+
+const rules = [
+  { q: "Czy łączysz retinol z kwasem AHA/BHA tego samego wieczoru?", bad: true, note: "Zwykle lepiej rozdzielić dni albo warstwy z przerwą." },
+  { q: "Czy SPF jest ostatnim krokiem rano przed makijażem?", bad: false, note: "Tak ma być: pielęgnacja, filtr, dopiero baza." },
+  { q: "Czy nakładasz gęsty krem przed lekkim serum?", bad: true, note: "Lżejsze formuły wcześniej, gęstsze później." },
+];
+---
+<Shell title="Kolejność produktów | Hola Care" description="Prosta kolejność mycie, serum, krem, SPF. Zaznacz, co robisz dziś, i sprawdź typowe błędy łączenia.">
+  <section class="mx-auto max-w-3xl px-5 py-14">
+    <p class="text-[11px] uppercase tracking-[0.22em] text-leaf-700">Narzędzie</p>
+    <h1 class="mt-2 font-display text-5xl leading-tight">Kolejność przy umywalce</h1>
+    <p class="mt-4 max-w-xl text-lg text-[var(--mute)]">Ułóż wieczór albo poranek bez dwunastu kroków. Zaznaczenia zostają w tej przeglądarce.</p>
+
+    <ol class="mt-10 space-y-3" id="kolejnosc-list" data-key="hola-kolejnosc-v1">
+      {steps.map((step, i) => (
+        <li>
+          <label class="flex cursor-pointer gap-4 border border-[var(--line)] bg-leaf-50/70 px-4 py-4 hover:border-leaf-700/30">
+            <span class="font-display text-2xl text-leaf-700/40">{String(i + 1).padStart(2, "0")}</span>
+            <span class="flex-1">
+              <span class="flex items-start justify-between gap-3">
+                <span class="font-display text-2xl leading-tight">{step.title}</span>
+                <input type="checkbox" class="mt-2 accent-leaf-700" data-id={step.id} />
+              </span>
+              <span class="mt-1 block text-sm text-[var(--mute)]">{step.tip}</span>
+            </span>
+          </label>
+        </li>
+      ))}
+    </ol>
+
+    <div class="mt-6 flex flex-wrap items-center gap-4">
+      <p id="kolejnosc-status" class="text-sm text-[var(--mute)]"></p>
+      <button type="button" id="kolejnosc-reset" class="border border-[var(--line)] px-4 py-2 text-sm hover:border-leaf-700/40">Wyczyść</button>
+    </div>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl">Szybki test łączenia</h2>
+      <p class="mt-2 text-sm text-[var(--mute)]">Odpowiedz szczerze. To nie diagnoza, tylko porządek w głowie.</p>
+      <ul class="mt-6 space-y-3" id="rules-list">
+        {rules.map((rule, i) => (
+          <li class="border border-[var(--line)] p-4" data-bad={rule.bad ? "1" : "0"}>
+            <p class="font-medium">{rule.q}</p>
+            <div class="mt-3 flex gap-2">
+              <button type="button" class="rule-yes border border-[var(--line)] px-3 py-1.5 text-sm" data-i={i}>Tak</button>
+              <button type="button" class="rule-no border border-[var(--line)] px-3 py-1.5 text-sm" data-i={i}>Nie</button>
+            </div>
+            <p class="rule-note mt-3 hidden text-sm text-leaf-700" data-note={i}>{rule.note}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </section>
+</Shell>
+<script>
+  const root = document.getElementById("kolejnosc-list");
+  const key = root?.getAttribute("data-key") || "hola-kolejnosc";
+  const status = document.getElementById("kolejnosc-status");
+  const boxes = [...document.querySelectorAll("#kolejnosc-list input[type=checkbox]")];
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(key) || "{}"); } catch {}
+  boxes.forEach((box) => {
+    const id = box.getAttribute("data-id");
+    box.checked = !!saved[id];
+    box.addEventListener("change", () => {
+      saved[id] = box.checked;
+      localStorage.setItem(key, JSON.stringify(saved));
+      paint();
+    });
+  });
+  function paint() {
+    const done = boxes.filter((b) => b.checked).length;
+    if (status) status.textContent = done + " z " + boxes.length + " kroków zaznaczonych";
+  }
+  document.getElementById("kolejnosc-reset")?.addEventListener("click", () => {
+    saved = {};
+    localStorage.removeItem(key);
+    boxes.forEach((b) => { b.checked = false; });
+    paint();
+  });
+  paint();
+
+  document.querySelectorAll(".rule-yes, .rule-no").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const i = btn.getAttribute("data-i");
+      const item = btn.closest("li");
+      const note = item?.querySelector(".rule-note");
+      const bad = item?.getAttribute("data-bad") === "1";
+      const saidYes = btn.classList.contains("rule-yes");
+      if (note) {
+        note.classList.remove("hidden");
+        if ((bad && saidYes) || (!bad && !saidYes)) {
+          note.textContent = (note.getAttribute("data-note") || "") + " Warto poprawić kolejność.";
+        } else {
+          note.textContent = "Brzmi sensownie. Zostaw tak.";
+        }
+      }
+    });
+  });
+</script>

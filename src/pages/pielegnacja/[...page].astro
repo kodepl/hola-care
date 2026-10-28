@@ -11,18 +11,19 @@ const { page } = Astro.props;
 ---
 <Shell title="Pielęgnacja | Hola Care" description="Archiwum Hola Care: skóra, składniki, makijaż i rytuały łazienkowe.">
   <section class="mx-auto max-w-5xl px-5 py-14">
-    <p class="text-xs uppercase tracking-[0.28em] text-leaf-700">Portal urody</p>
+    <p class="text-[11px] uppercase tracking-[0.28em] text-leaf-700">Portal urody</p>
     <h1 class="mt-2 font-display text-5xl">Pielęgnacja</h1>
-    <ol class="mt-10 divide-y divide-leaf-900/10">
+    <p class="mt-3 max-w-xl text-[var(--mute)]">Skóra, skład INCI, makijaż dzienny i rytuały, które da się powtórzyć w Gdyni.</p>
+    <ol class="mt-10 divide-y divide-[var(--line)]">
       {page.data.map((post, i) => (
         <li>
           <a class="grid gap-3 py-6 sm:grid-cols-[5rem_1fr_8rem] sm:items-baseline" href={`/pielegnacja/${post.slug}/`}>
             <span class="font-display text-2xl text-leaf-700/40">{String((page.currentPage - 1) * page.size + i + 1).padStart(2, "0")}</span>
             <span>
-              <span class="block text-xs uppercase tracking-widest text-leaf-700">{post.data.category}</span>
+              <span class="block text-[11px] uppercase tracking-widest text-leaf-700">{post.data.category}</span>
               <span class="mt-1 block font-display text-3xl leading-tight">{post.data.title}</span>
             </span>
-            <span class="text-sm opacity-60">{post.data.pubDate.toLocaleDateString("pl-PL")}</span>
+            <span class="text-sm text-[var(--mute)]">{post.data.pubDate.toLocaleDateString("pl-PL")}</span>
           </a>
         </li>
       ))}
@@ -34,7 +35,7 @@ const { page } = Astro.props;
         ) : (
           <span class="opacity-40">← Nowsze</span>
         )}
-        <span class="tabular-nums opacity-70">{page.currentPage} / {page.lastPage}</span>
+        <span class="tabular-nums text-[var(--mute)]">{page.currentPage} / {page.lastPage}</span>
         {page.url.next ? (
           <a href={page.url.next} class="underline-offset-2 hover:underline">Starsze →</a>
         ) : (
